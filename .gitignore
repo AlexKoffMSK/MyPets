@@ -129,3 +129,5 @@ dmypy.json
 .pyre/
 
 TgmBotCurrencyCBR/config.py
+
+TgmBotCurrencyCBR/data.png
