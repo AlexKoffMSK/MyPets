@@ -7,6 +7,7 @@ from functions import *
 
 date_to_parse=[]
 today = date.today()
+is_leap_year = False
 
 bot = telebot.TeleBot(token)
 
@@ -16,7 +17,7 @@ def print_welcome(chat_id, from_user):
     button2 = types.KeyboardButton("Рассказать о боте")
     markup.add(button1, button2)
     bot.send_message(chat_id,
-    "Привет, {0.first_name}! я умею доставать курс нужной валюты, установленный Центральный банком РФ на заданную дату между 01.07.1992 и сегодняшним днём!"
+    "Привет, {0.first_name}! Я умею доставать курс нужной валюты, установленный Центральный банком РФ на заданную дату между 01.07.1992 и сегодняшним днём!"
     .format(from_user), reply_markup=markup)
 
 #Handle '/start' and '/help'
@@ -39,11 +40,15 @@ def processing_users_response_to_welcome_message_by_bot(user_message):
 @bot.message_handler(content_types=['text'])
 def process_users_response_by_bot_request_to_insert_year(user_message):
     date_to_parse.clear()
+    global is_leap_year
+    is_leap_year = False
     if int(user_message.text) < 1992 or int(user_message.text) > int(today.year):
         bot_msg = bot.send_message(user_message.chat.id, 'Вы ввели некорректный год! Введите правильно!')
         bot.register_next_step_handler(bot_msg, process_users_response_by_bot_request_to_insert_year)
     else:
         date_to_parse.append(user_message.text)
+        if (int(user_message.text) % 4) == 0:
+            is_leap_year = True
         bot_msg = bot.send_message(user_message.chat.id, 'Введите месяц в формате ММ: ',reply_markup=types.ReplyKeyboardRemove())
         bot.register_next_step_handler(bot_msg, process_users_response_by_bot_request_to_insert_month)
 
@@ -59,10 +64,13 @@ def process_users_response_by_bot_request_to_insert_month(user_message):
 
 @bot.message_handler(content_types=['text'])
 def process_users_response_by_bot_request_to_insert_day(user_message):
-    if int(user_message.text) <= 0 or int(user_message.text) > 31:
-        #прописать ограничения по високосному году и количеству дней в месяцах
+    if (int(user_message.text) < 1 or int(user_message.text) > 31) \
+            or (int(date_to_parse[1]) == 2 and is_leap_year == False and int(user_message.text) > 28) \
+            or (int(date_to_parse[1]) == 2 and is_leap_year == True and int(user_message.text) > 29) \
+            or (int(date_to_parse[1]) == 4 or int(date_to_parse[1]) == 6 or int(date_to_parse[1]) == 9 or int(date_to_parse[1]) == 11 and int(user_message.text) == 31):
         bot_msg = bot.send_message(user_message.chat.id,'Введен некорректный день! Введите правильно!')
         bot.register_next_step_handler(bot_msg, process_users_response_by_bot_request_to_insert_day)
+
     else:
         date_to_parse.append(user_message.text)
         bot_msg = bot.send_message(user_message.chat.id, 'Выбранная дата для поиска курса валюты: ' + date_to_parse[2] + '.' + date_to_parse[1] + '.'+ date_to_parse[0])
@@ -74,6 +82,6 @@ def parse_day_to_get_data(user_message):
     data_frame = MakeDataFrameFromCurLink(day_soup)
     dfi.export(data_frame, 'data.png')
     bot.send_photo(user_message.chat.id, open('data.png', 'rb'))
-    send_welcome(user_message)
+    print_welcome(user_message.chat.id, user_message.from_user)
 
 bot.infinity_polling()
