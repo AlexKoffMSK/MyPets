@@ -1,9 +1,7 @@
 import telebot
-from telebot import types # для указания типов
+from telebot import types
 from datetime import date
 import dataframe_image as dfi
-from time import sleep
-from telegram_bot_calendar import DetailedTelegramCalendar, LSTEP
 from config import token
 from functions import *
 
