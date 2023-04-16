@@ -59,7 +59,7 @@ def process_users_response_by_bot_request_to_insert_month(user_message):
         bot.register_next_step_handler(bot_msg, process_users_response_by_bot_request_to_insert_month)
     else:
         date_to_parse.append(user_message.text)
-        bot_msg = bot.send_message(user_message.chat.id, 'Введите день в формате ДД (02, 08, 11 и т.д.): ')
+        bot_msg = bot.send_message(user_message.chat.id, 'Введите день в формате ДД (01, 08, 29 и т.д.): ')
         bot.register_next_step_handler(bot_msg, process_users_response_by_bot_request_to_insert_day)
 
 @bot.message_handler(content_types=['text'])
@@ -83,5 +83,7 @@ def parse_day_to_get_data(user_message):
     dfi.export(data_frame, 'data.png')
     bot.send_photo(user_message.chat.id, open('data.png', 'rb'))
     print_welcome(user_message.chat.id, user_message.from_user)
+
+    #хорошо бы доделать выбор - валюту по выбору либо все за день
 
 bot.infinity_polling()
