@@ -60,6 +60,7 @@ def process_users_response_by_bot_request_to_insert_month(user_message):
 @bot.message_handler(content_types=['text'])
 def process_users_response_by_bot_request_to_insert_day(user_message):
     if int(user_message.text) <= 0 or int(user_message.text) > 31:
+        #прописать ограничения по високосному году и количеству дней в месяцах
         bot_msg = bot.send_message(user_message.chat.id,'Введен некорректный день! Введите правильно!')
         bot.register_next_step_handler(bot_msg, process_users_response_by_bot_request_to_insert_day)
     else:
