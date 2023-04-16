@@ -17,7 +17,7 @@ def print_welcome(chat_id, from_user):
     button2 = types.KeyboardButton("Рассказать о боте")
     markup.add(button1, button2)
     bot.send_message(chat_id,
-    "Привет, {0.first_name}! Я умею доставать курс нужной валюты, установленный Центральный банком РФ на заданную дату между 01.07.1992 и сегодняшним днём!"
+    "Привет, {0.first_name}! Я умею доставать курсы валют, установленные Центральным банком РФ на заданную дату между 01.07.1992 и сегодняшним днём!"
     .format(from_user), reply_markup=markup)
 
 #Handle '/start' and '/help'
@@ -28,11 +28,11 @@ def send_welcome(message):
 @bot.message_handler(content_types=['text'])
 def processing_users_response_to_welcome_message_by_bot(user_message):
     if user_message.text == 'Ввести дату для запроса':
-        year = bot.send_message(user_message.chat.id, 'Введите год в формате ГГГГ: ', reply_markup=types.ReplyKeyboardRemove())
+        year = bot.send_message(user_message.chat.id, 'Введите год в формате ГГГГ (1992, 2003 и т.д.): ', reply_markup=types.ReplyKeyboardRemove())
         bot.register_next_step_handler(year, process_users_response_by_bot_request_to_insert_year)
     elif user_message.text == 'Рассказать о боте':
         bot.send_message(user_message.chat.id,
-            'Вы задаете дату и выбираете валюту, а бот получает информацию с сайта Центрального банка РФ по соответствующему запросу.')
+            'Вы задаете дату, а бот получает информацию с сайта Центрального банка РФ по соответствующему запросу.')
     else:
         bot_msg = bot.send_message(user_message.chat.id, 'Неожидаемый запрос: ' + user_message.text)
         bot.register_next_step_handler(bot_msg, send_welcome)
@@ -49,7 +49,7 @@ def process_users_response_by_bot_request_to_insert_year(user_message):
         date_to_parse.append(user_message.text)
         if (int(user_message.text) % 4) == 0:
             is_leap_year = True
-        bot_msg = bot.send_message(user_message.chat.id, 'Введите месяц в формате ММ: ',reply_markup=types.ReplyKeyboardRemove())
+        bot_msg = bot.send_message(user_message.chat.id, 'Введите месяц в формате ММ (02, 08, 11 и т.д.): ',reply_markup=types.ReplyKeyboardRemove())
         bot.register_next_step_handler(bot_msg, process_users_response_by_bot_request_to_insert_month)
 
 @bot.message_handler(content_types=['text'])
@@ -59,7 +59,7 @@ def process_users_response_by_bot_request_to_insert_month(user_message):
         bot.register_next_step_handler(bot_msg, process_users_response_by_bot_request_to_insert_month)
     else:
         date_to_parse.append(user_message.text)
-        bot_msg = bot.send_message(user_message.chat.id, 'Введите день в формате ДД: ')
+        bot_msg = bot.send_message(user_message.chat.id, 'Введите день в формате ДД (02, 08, 11 и т.д.): ')
         bot.register_next_step_handler(bot_msg, process_users_response_by_bot_request_to_insert_day)
 
 @bot.message_handler(content_types=['text'])
