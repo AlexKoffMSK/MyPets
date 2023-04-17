@@ -131,3 +131,5 @@ dmypy.json
 TgmBotCurrencyCBR/config.py
 
 TgmBotCurrencyCBR/data.png
+
+TgmBotCurrencyCBR/wh.py

@@ -64,16 +64,16 @@ def process_users_response_by_bot_request_to_insert_month(user_message):
 
 @bot.message_handler(content_types=['text'])
 def process_users_response_by_bot_request_to_insert_day(user_message):
-    if (int(user_message.text) < 1 or int(user_message.text) > 31):
+    if int(user_message.text) < 1 or int(user_message.text) > 31:
         bot_msg = bot.send_message(user_message.chat.id, 'Введен некорректный день ( <1, >31) ! Введите правильно!')
         bot.register_next_step_handler(bot_msg, process_users_response_by_bot_request_to_insert_day)
-    elif (int(date_to_parse[1]) == 2 and is_leap_year == False and int(user_message.text) > 28):
+    elif int(date_to_parse[1]) == 2 and is_leap_year == False and int(user_message.text) > 28:
         bot_msg = bot.send_message(user_message.chat.id, 'Введен некорректный день (Невисокосный год, >28)! Введите правильно!')
         bot.register_next_step_handler(bot_msg, process_users_response_by_bot_request_to_insert_day)
-    elif (int(date_to_parse[1]) == 2 and is_leap_year == True and int(user_message.text) > 29):
+    elif int(date_to_parse[1]) == 2 and is_leap_year == True and int(user_message.text) > 29:
         bot_msg = bot.send_message(user_message.chat.id,'Введен некорректный день (Високосный год, > 29)! Введите правильно!')
         bot.register_next_step_handler(bot_msg, process_users_response_by_bot_request_to_insert_day)
-    elif ((int(date_to_parse[1]) == 4 or int(date_to_parse[1]) == 6 or int(date_to_parse[1]) == 9 or int(date_to_parse[1]) == 11)) and (int(user_message.text) == 31):
+    elif (int(date_to_parse[1]) == 4 or int(date_to_parse[1]) == 6 or int(date_to_parse[1]) == 9 or int(date_to_parse[1]) == 11) and (int(user_message.text) == 31):
         bot_msg = bot.send_message(user_message.chat.id,'Введен некорректный день (В месяце 30 дней, 31)! Введите правильно!')
         bot.register_next_step_handler(bot_msg, process_users_response_by_bot_request_to_insert_day)
     else:
