@@ -16,9 +16,7 @@ def print_welcome(chat_id, from_user):
     button1 = types.KeyboardButton("Ввести дату для запроса")
     button2 = types.KeyboardButton("Информация о боте")
     markup.add(button1, button2)
-    bot.send_message(chat_id,
-    "Привет, {0.first_name}! Я умею доставать курсы валют, установленные Центральным банком РФ на заданную дату между 01.07.1992 и сегодняшним днём!"
-    .format(from_user), reply_markup=markup)
+    bot.send_message(chat_id,"Начнём!".format(from_user), reply_markup=markup)
 
 #Handle '/start' and '/help'
 @bot.message_handler(commands=['start', 'help'])
@@ -32,7 +30,7 @@ def processing_users_response_to_welcome_message_by_bot(user_message):
         bot.register_next_step_handler(bot_msg, process_users_response_by_bot_request_to_insert_year)
     elif user_message.text == 'Информация о боте':
         bot.send_message(user_message.chat.id,
-            'Привет! Я Алексей Рожков, это мой первый бот в телеграм. Он работает так: Вы задаете желаемую дату, а бот получает информацию о курсах валют с сайта Центрального банка РФ на указанную дату и присылает Вам в чат.')
+            'Привет! Я Алексей Рожков, это мой первый бот в телеграм. Он работает так: Вы задаете желаемую дату (между 01.07.1992 и сегодняшним днём), а бот получает информацию о курсах валют с сайта Центрального банка РФ на указанную дату и присылает Вам в чат.')
     else:
         bot_msg = bot.send_message(user_message.chat.id, 'Неожидаемый запрос: ' + user_message.text)
         bot.register_next_step_handler(bot_msg, send_welcome)
