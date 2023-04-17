@@ -85,8 +85,15 @@ def process_users_response_by_bot_request_to_insert_day(user_message):
 def parse_day_to_get_data(user_message):
     day_soup = GetBSSourceDataFromCBRFByDate(date_to_parse[2], date_to_parse[1], date_to_parse[0])
     data_frame = MakeDataFrameFromCurLink(day_soup)
-    dfi.export(data_frame, 'data.png')
-    bot.send_photo(user_message.chat.id, open('data.png', 'rb'))
+    bot.send_message(user_message.chat.id, data_frame.to_string())
+
+    #Так как Яндекс.Облако не делает файл png и, соответственно, не отправляет его в телеграм (а я еще не разобрался - что не так),
+    #то пока что фукнции убраны, а данные преобразуем в текст и посылаем пользователю. Тоже работает!
+    # dfi.export(data_frame, 'data.png')
+    # bot.send_photo(user_message.chat.id, open('data.png', 'rb'))
+
+    bot.send_message(user_message.chat.id, data_frame.to_string())
+
     print_welcome(user_message.chat.id, user_message.from_user)
 
     #хорошо бы доделать выбор - валюту по выбору либо все за день
