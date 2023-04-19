@@ -3,7 +3,6 @@ from fake_useragent import UserAgent
 from bs4 import BeautifulSoup
 import pandas as pd
 
-
 def GetBSSourceDataFromCBRFByDate(day, month, year):
     print("Run", GetBSSourceDataFromCBRFByDate.__name__)
     #https://www.cbr.ru/currency_base/daily/?UniDbQuery.Posted=True&UniDbQuery.To=01.07.1992
@@ -12,7 +11,6 @@ def GetBSSourceDataFromCBRFByDate(day, month, year):
     response = requests.get(main_part_of_page_address_str + day + '.' + month + '.' + year, headers = headers_to_send).text
     soup = BeautifulSoup(response, 'lxml')
     return soup
-
 
 def MakeDataFrameFromCurLink(soup_source):
     print("Run", MakeDataFrameFromCurLink.__name__)

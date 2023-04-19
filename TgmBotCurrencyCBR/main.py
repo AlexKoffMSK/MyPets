@@ -4,6 +4,8 @@ from datetime import date
 import dataframe_image as dfi
 from config import token
 from functions import *
+# import matplotlib.pyplot as plt
+# from pandas.plotting import table
 
 date_to_parse=[]
 today = date.today()
@@ -86,8 +88,15 @@ def parse_day_to_get_data(user_message):
 
     #Так как Яндекс.Облако не делает файл png и, соответственно, не отправляет его в телеграм (а я еще не разобрался - что не так),
     #то пока что фукнции убраны, а данные преобразуем в текст и посылаем пользователю. Тоже работает!
-    # dfi.export(data_frame, 'data.png')
-    # bot.send_photo(user_message.chat.id, open('data.png', 'rb'))
+    #dfi.export(data_frame, 'data.png')
+    #bot.send_photo(user_message.chat.id, open('data.png', 'rb'))
+
+    # Буду пробовать через matplotlib тоже график рисовать. Сейчас рисует, но разрешение очень низкое
+    # ax = plt.subplot(111, frame_on=False)  # no visible frame
+    # ax.xaxis.set_visible(False)  # hide the x axis
+    # ax.yaxis.set_visible(False)  # hide the y axis
+    # table(ax, data_frame, rowLabels=[''] * data_frame.shape[0], loc='center')  # where df is your data frame
+    # plt.savefig('data.png')
 
     bot.send_message(user_message.chat.id, data_frame.to_string())
 
