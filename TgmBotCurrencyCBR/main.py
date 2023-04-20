@@ -86,8 +86,8 @@ def parse_day_to_get_data(user_message):
     day_soup = GetBSSourceDataFromCBRFByDate(date_to_parse[2], date_to_parse[1], date_to_parse[0])
     data_frame = MakeDataFrameFromCurLink(day_soup)
 
-    #Так как Яндекс.Облако не делает файл png и, соответственно, не отправляет его в телеграм (а я еще не разобрался - что не так),
-    #то пока что фукнции убраны, а данные преобразуем в текст и посылаем пользователю. Тоже работает!
+    #Так как Яндекс. Облако не делает файл png и, соответственно, не отправляет его в телеграм (а я еще не разобрался - что не так),
+    #то пока что функции убраны, а данные преобразуем в текст и посылаем пользователю. Тоже работает!
     #dfi.export(data_frame, 'data.png')
     #bot.send_photo(user_message.chat.id, open('data.png', 'rb'))
 
