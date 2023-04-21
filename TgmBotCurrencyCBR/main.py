@@ -16,8 +16,9 @@ bot = telebot.TeleBot(token)
 def print_welcome(chat_id, from_user):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     button1 = types.KeyboardButton("Ввести дату для запроса")
-    button2 = types.KeyboardButton("Информация о боте")
-    markup.add(button1, button2)
+    button2 = types.KeyboardButton("Курс на сегодня")
+    button3 = types.KeyboardButton("Информация о боте")
+    markup.add(button1, button2, button3)
     bot.send_message(chat_id,"Начнём!".format(from_user), reply_markup=markup)
 
 #Handle '/start' and '/help'
@@ -27,9 +28,23 @@ def send_welcome(message):
 
 @bot.message_handler(content_types=['text'])
 def processing_users_response_to_welcome_message_by_bot(user_message):
+    date_to_parse.clear()
     if user_message.text == 'Ввести дату для запроса':
         bot_msg = bot.send_message(user_message.chat.id, 'Введите год в формате ГГГГ (1992, 2003 и т.д.): ', reply_markup=types.ReplyKeyboardRemove())
         bot.register_next_step_handler(bot_msg, process_users_response_by_bot_request_to_insert_year)
+    elif user_message.text == 'Курс на сегодня':
+        date_to_parse.append(str(today.year))
+        if today.month < 10:
+            date_to_parse.append('0'+str(today.month))
+        else:
+            date_to_parse.append(str(today.month))
+        if today.day < 10:
+            date_to_parse.append('0'+str(today.day))
+        else:
+            date_to_parse.append(str(today.day))
+        bot_msg = bot.send_message(user_message.chat.id, date_to_parse[2] + '.' + date_to_parse[1] + '.'+ date_to_parse[0], reply_markup=types.ReplyKeyboardRemove())
+        parse_day_to_get_data(bot_msg)
+
     elif user_message.text == 'Информация о боте':
         bot.send_message(user_message.chat.id,
             'Привет! Я Алексей Рожков, это мой первый бот в телеграм. Он работает так: Вы задаете желаемую дату (между 01.07.1992 и сегодняшним днём), а бот получает информацию о курсах валют с сайта Центрального банка РФ на указанную дату и присылает Вам в чат.')
@@ -39,7 +54,7 @@ def processing_users_response_to_welcome_message_by_bot(user_message):
 
 @bot.message_handler(content_types=['text'])
 def process_users_response_by_bot_request_to_insert_year(user_message):
-    date_to_parse.clear()
+    #date_to_parse.clear()
     global is_leap_year
     is_leap_year = False
     if int(user_message.text) < 1992 or int(user_message.text) > int(today.year):
@@ -88,15 +103,8 @@ def parse_day_to_get_data(user_message):
 
     #Так как Яндекс. Облако не делает файл png и, соответственно, не отправляет его в телеграм (а я еще не разобрался - что не так),
     #то пока что функции убраны, а данные преобразуем в текст и посылаем пользователю. Тоже работает!
-    #dfi.export(data_frame, 'data.png')
-    #bot.send_photo(user_message.chat.id, open('data.png', 'rb'))
-
-    # Буду пробовать через matplotlib тоже график рисовать. Сейчас рисует, но разрешение очень низкое
-    # ax = plt.subplot(111, frame_on=False)  # no visible frame
-    # ax.xaxis.set_visible(False)  # hide the x axis
-    # ax.yaxis.set_visible(False)  # hide the y axis
-    # table(ax, data_frame, rowLabels=[''] * data_frame.shape[0], loc='center')  # where df is your data frame
-    # plt.savefig('data.png')
+    dfi.export(data_frame, 'data.png')
+    bot.send_photo(user_message.chat.id, open('data.png', 'rb'))
 
     bot.send_message(user_message.chat.id, data_frame.to_string())
 
